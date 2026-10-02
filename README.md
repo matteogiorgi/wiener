@@ -131,7 +131,7 @@ The paper focuses on *indirect algorithmic* attacks, which exploit mathematical 
 | **Computing $\boldsymbol{\phi(N)}$** | Since $p+q = N - \phi(N) + 1$, $p$ and $q$ are the roots of $x^2 - (N-\phi(N)+1)\thinspace x + N = 0$ | $\phi(N) \overset{\mathcal P}{\Longleftrightarrow} \text{factoring } N$ |
 | **$\boldsymbol{e}$-th root** | Knowing $\phi(N)$, solve $ed - k\phi(N) = 1$ with the extended Euclidean algorithm to get $d$, then $m = c^d \bmod N$ | $\phi(N) \overset{\mathcal P}{\Longrightarrow} \sqrt[e]{c} \bmod N$ |
 | **Common modulus** | Same $m$ encrypted under the same $N$ with coprime $e_1 \ne e_2$: find $e_1x + e_2y = 1$ | $c_1^x c_2^y \equiv m^{e_1x+e_2y} \equiv m \pmod N$ |
-| **Fixed point** (Simmons–Norris, 1977) | $\mathrm{Enc}_k$ is a permutation: re-encrypting $c$ eventually cycles back to $c$ | if $c^{(e^k)} \equiv c$ then $c^{(e^{k-1})} \equiv m$ |
+| **Fixed point** | $\mathrm{Enc}_k$ is a permutation: re-encrypting $c$ eventually cycles back to $c$ | if $c^{(e^k)} \equiv c$ then $c^{(e^{k-1})} \equiv m$ |
 
 The first row is the key fact reused by Wiener's attack $\Rightarrow$ anyone who learns $\phi(N)$ can factor $N$:
 
@@ -191,7 +191,7 @@ $$
 \left|\frac{e}{N} - \frac{k_0}{d g_0}\right| < \frac{1}{2\thinspace(d g_0)^2}
 $$
 
-which is exactly the hypothesis of Legendre's theorem. Therefore $k_0/(dg_0)$ **is one of the convergents of $e/N$**, and once you have the right convergent $c$:
+which is exactly the hypothesis of Legendre's theorem. Therefore $k_0/(dg_0)$ is one of the convergents of $e/N$, and once you have the right convergent $c$:
 
 $$
 \phi(N) = \left\lfloor \frac{e}{c} \right\rfloor - \left\lfloor \frac{g_0}{k_0} \right\rfloor

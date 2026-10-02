@@ -208,7 +208,7 @@ flowchart TD
     T -- yes --> OK(["N factored -> d = e⁻¹ mod φ(N)"])
     T -- no --> MORE{"more convergents?"}
     MORE -- yes --> I
-    MORE -- no --> INC["m <- m + 1, restart from c₁<br/>(m never exceeds ⌊g/k⌋)"]
+    MORE -- no --> INC["m <- m + 1,<br/>restart from c₁<br/>(m never exceeds ⌊g/k⌋)"]
     INC --> I
 ```
 

@@ -1,6 +1,6 @@
 # Wiener, attack!
 
-A short monograph (in Italian, typeset with LaTeX in the *Tufte* book style) that walks through the **RSA cryptosystem**, its **most common elementary attacks**, and the **continued-fraction attack on small private exponents** published by **Michael J. Wiener** in 1990. It ends with a compact implementation of the classic and the extended attack in *Wolfram Mathematica* — [Read the paper](src/wiener_attack.pdf).
+A short monograph (in Italian, typeset with LaTeX in the *Tufte* book style) that walks through the [RSA cryptosystem](https://en.wikipedia.org/wiki/RSA_cryptosystem), its most common elementary attacks, and the continued-fraction attack on small private exponents published by Michael J. Wiener in 1990. It ends with a compact implementation of the classic and the extended attack in *Wolfram Mathematica* — [Read the paper](src/wiener_attack.pdf).
 
 <img class="shot-img" src="assets/snoopy.gif" alt="snoopy" />
 
@@ -193,9 +193,9 @@ $$
 flowchart TD
     S(["Public key (e, N)"]) --> CF["Expand e/N as a continued fraction<br/>and list its convergents c₁ … cₙ"]
     CF --> M["m <- 0"]
-    M --> I["take the next convergent cᵢ"]
-    I --> PHI["candidate φ̃ = ⌊e / cᵢ⌋ − m"]
-    PHI --> Q["solve x² − (N − φ̃ + 1)x + N = 0"]
+    M --> I["take the next<br/>convergent cᵢ"]
+    I --> PHI["candidate<br/>φ̃ = ⌊e / cᵢ⌋ − m"]
+    PHI --> Q["solve<br/>x² − (N − φ̃ + 1)x + N = 0"]
     Q --> T{"integer roots p, q<br/>with pq = N?"}
     T -- yes --> OK(["N factored -> d = e⁻¹ mod φ(N)"])
     T -- no --> MORE{"more convergents?"}

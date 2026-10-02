@@ -11,6 +11,7 @@ The paper opens with Hardy's famous claim that number theory is "useless", and t
 
 
 
+
 ## Repository layout
 
 ```
@@ -32,7 +33,8 @@ The paper opens with Hardy's famous claim that number theory is "useless", and t
     └── template/ …             # original Tufte-book template
 ```
 
-The repository is mostly the paper itself: the code lives in its Appendix, and is also provided as the standalone scripts in [assets/code/](https://github.com/matteogiorgi/wiener/tree/master/assets/code).
+The repository is mostly the paper itself: the code lives in its Appendix, and is also provided as the standalone scripts in [`assets/code/`](https://github.com/matteogiorgi/wiener/tree/master/assets/code).
+
 
 
 
@@ -68,6 +70,7 @@ flowchart LR
 | **Appendix** | | Mathematica implementation of both attacks |
 
 Throughout the text the usual cast is used: **Alice** (sender), **Bob** (receiver) and **Oscar** (the cryptanalyst).
+
 
 
 
@@ -108,6 +111,9 @@ sequenceDiagram
     B->>B: m = cᵈ mod N
 ```
 
+
+
+
 ## 2. Elementary attacks
 
 The paper focuses on *indirect algorithmic* attacks, which exploit mathematical weaknesses or misuse of the system rather than attacking factorization head-on.
@@ -129,6 +135,7 @@ Two open problems are stated along the way: whether computing $e$-th roots modul
 
 
 
+
 ## 3. Wiener's attack
 
 Small private exponents are tempting because they make decryption fast (e.g. on smart cards). Wiener showed that if $d$ is roughly smaller than $\sqrt[4]{N}$, then $d$ can be recovered from the public key alone:
@@ -136,6 +143,7 @@ Small private exponents are tempting because they make decryption fast (e.g. on 
 ```math
 (e, N) \xrightarrow[\;d\ \text{small}\;]{\;\mathcal P\;} \{d\}
 ```
+
 
 ### 3.1 Continued fractions and convergents
 
@@ -157,6 +165,7 @@ The paper proves that:
 ```
 
 The expansion of a rational $x/y$ is computed with exactly the same quotients as the Euclidean algorithm for $\gcd(x,y)$, so it has $O(\log N)$ terms.
+
 
 ### 3.2 The classic attack
 
@@ -197,6 +206,7 @@ flowchart TD
 
 There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$, so the overall search costs $\Theta(\log_2 N)$ candidate checks.
 
+
 ### 3.3 Efficiency
 
 - Convergents that violate $\left|e/N - c_i\right| < 1/(2(dg_0)^2)$ can be discarded a priori.
@@ -210,6 +220,7 @@ There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$,
 ```
 
 The convergent $c_3 = 5/209$ gives $\tilde\phi = \lfloor e/c_3 \rfloor = 2447382016$, which factors $N = 60317 \cdot 40577$. So $d = 209$, comfortably below the theorem's bound ($\approx 2426$).
+
 
 ### 3.4 Countermeasures
 
@@ -234,6 +245,7 @@ Setting $d = N^\delta$ and $e = N^\sigma$, the attack works roughly when
 
 so small public exponents strengthen the attack (up to $\delta = 1/2$ when $\sigma = 1/2$) and large ones kill it ($\sigma = 3/2$). The paper also notes that the Wiener bound is not tight: Boneh and Durfee (1998) pushed it to $d < N^{0.292}$, and the correct bound is conjectured to be $\sqrt N$.
 
+
 ### 3.5 The extended attack
 
 If $d = N^{0.25+\tau}$ the classic attack almost surely fails. Verheul and van Tilborg (1997) showed that the missing information can be **brute-forced**. With $r = \log_2 d - \log_2\sqrt[4]{N}$, the right fraction can be written in terms of two *consecutive* convergents $c_t = a_t/b_t$ and $c_{t+1} = a_{t+1}/b_{t+1}$:
@@ -248,11 +260,13 @@ With a 64-bit brute-force budget, $2r+8 = 64$ gives $r = 28$: any RSA instance w
 
 
 
+
 ## 4. Implementation (Mathematica)
 
-The Appendix of the paper implements both attacks in a handful of lines of Wolfram Language. The same code is in [assets/code/](https://github.com/matteogiorgi/wiener/tree/master/assets/code).
+The Appendix of the paper implements both attacks in a handful of lines of Wolfram Language. The same code is in [`assets/code/`](https://github.com/matteogiorgi/wiener/tree/master/assets/code).
 
-### Classic attack: [classic.wl](https://github.com/matteogiorgi/wiener/blob/master/assets/code/classic.wl)
+
+### Classic attack: [`classic.wl`](https://github.com/matteogiorgi/wiener/blob/master/assets/code/classic.wl)
 
 ```mathematica
 e = 7502876735617; n = 28562942440499; (* example of an attackable public key *)
@@ -279,7 +293,8 @@ For the sample key above the expansion is $e/N = [0;3,1,4,5,1,1,3,\dots]$, and t
 d = 769      p = 5685857      q = 5023507
 ```
 
-### Extended attack: [extended.wl](https://github.com/matteogiorgi/wiener/blob/master/assets/code/extended.wl)
+
+### Extended attack: [`extended.wl`](https://github.com/matteogiorgi/wiener/blob/master/assets/code/extended.wl)
 
 ```mathematica
 r = 4; Dl = 2; (* tune to the case at hand *)
@@ -295,6 +310,7 @@ primes = Flatten[checkL /@ (phiList-m /. {m->#}& /@ Range[0,9])];
 
 `extended.wl` reuses `e`, `cList` and `checkL` from the classic script, so it has to run in the same session after it. `r` (search size) and `Dl` ($\Delta$) are parameters to tune.
 
+
 ### Running
 
 With [`wolframscript`](https://www.wolfram.com/wolframscript/) installed:
@@ -307,6 +323,7 @@ You can also paste the cells into a Mathematica notebook and evaluate `primes`.
 
 
 
+
 ## Building the paper
 
 The paper is written in Italian with the [`tufte-book`](https://ctan.org/pkg/tufte-latex) class (included in `src/`). It uses wide margins for definitions, lemmas, side notes and historical asides. With a full TeX distribution (e.g. TeX Live):
@@ -316,7 +333,8 @@ cd src
 latexmk -pdf main.tex
 ```
 
-The precompiled output is [src/wiener_attack.pdf](https://github.com/matteogiorgi/wiener/blob/master/src/wiener_attack.pdf).
+The precompiled output is [`src/wiener_attack.pdf`](https://github.com/matteogiorgi/wiener/blob/master/src/wiener_attack.pdf).
+
 
 
 
@@ -332,4 +350,4 @@ The precompiled output is [src/wiener_attack.pdf](https://github.com/matteogiorg
 8. D. Boneh, G. Durfee — *Cryptanalysis of RSA with Private Key d Less Than N^0.292*, 1998.
 9. *PKCS #1: RSA Cryptography Specifications Version 2.2*, IETF, 2012.
 
-The full bibliography (18 entries) is at the end of the paper and in [src/bibliography.bib](https://github.com/matteogiorgi/wiener/blob/master/src/bibliography.bib).
+The full bibliography (18 entries) is at the end of the paper and in [`src/bibliography.bib`](https://github.com/matteogiorgi/wiener/blob/master/src/bibliography.bib).

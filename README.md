@@ -101,6 +101,12 @@ $$
 $$
 
 ```mermaid
+---
+config:
+  sequence:
+    actorMargin: 120
+    diagramMarginX: 80
+---
 sequenceDiagram
     participant B as Bob
     participant A as Alice
@@ -356,4 +362,4 @@ The precompiled output is [`src/wiener_attack.pdf`](https://github.com/matteogio
 8. D. Boneh, G. Durfee — *Cryptanalysis of RSA with Private Key d Less Than N^0.292*, 1998.
 9. *PKCS #1: RSA Cryptography Specifications Version 2.2*, IETF, 2012.
 
-The full bibliography (18 entries) is at the end of the paper; it is written directly in [`src/main.tex`](https://github.com/matteogiorgi/wiener/blob/master/src/main.tex) (`thebibliography` environment).
+The full bibliography is at the end of the paper, written directly in [`src/main.tex`](https://github.com/matteogiorgi/wiener/blob/master/src/main.tex) (`thebibliography` environment).

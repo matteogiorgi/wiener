@@ -32,7 +32,7 @@ The paper opens with Hardy's famous claim that number theory is "useless", and t
     └── template/ …             # original Tufte-book template
 ```
 
-The repository is mostly the paper itself: the code lives in its Appendix, and is also provided as the standalone scripts in [assets/code/](assets/code/).
+The repository is mostly the paper itself: the code lives in its Appendix, and is also provided as the standalone scripts in [assets/code/](https://github.com/matteogiorgi/wiener/tree/master/assets/code).
 
 
 

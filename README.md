@@ -71,7 +71,7 @@ flowchart LR
 | | Extended attack | Verheul–van Tilborg brute-force extension, Dujella's improvement |
 | **Appendix** | | Mathematica implementation of both attacks |
 
-Throughout the paper the usual cast is used: **Alice** (sender), **Bob** (receiver) and **Oscar** (the cryptanalyst).
+Throughout the paper the usual cast is used: *Alice* (sender), *Bob* (receiver) and *Oscar* (the cryptanalyst).
 
 
 
@@ -94,7 +94,7 @@ $$
 c^d \equiv (m^e)^d = m^{1+k\phi(N)} \equiv m \pmod N
 $$
 
-While inverting $e$ modulo $\phi(N)$ is *sufficient*, the *necessary* condition is that $e, d$ are inverse modulo **Carmichael's function** $\lambda(N) = \mathrm{lcm}(p-1, q-1)$, which is what [PKCS #1](https://www.rfc-editor.org/info/rfc8017/) prescribes. The two are related by
+While inverting $e$ modulo $\phi(N)$ is *sufficient*, the *necessary* condition is that $e, d$ are inverse modulo Carmichael's function $\lambda(N) = \mathrm{lcm}(p-1, q-1)$, which is what [PKCS #1](https://www.rfc-editor.org/info/rfc8017/) prescribes. The two are related by
 
 $$
 \phi(N) = (p-1)(q-1) = \gcd(p-1,q-1)\thinspace\lambda(N)
@@ -218,8 +218,8 @@ There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$,
 ### 3.3 Efficiency
 
 - The right convergent has denominator $dg_0$, so any convergent $c_i = a_i/b_i$ with $\lvert e/N - c_i\rvert \ge 1/(2b_i^2)$ can be discarded a priori.
-- With **balanced primes** ($p < q < 2p$) we have $\lvert N - \phi(N)\rvert = \lvert p+q-1\rvert < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
-- For random balanced primes, $g = \gcd(p-1,q-1)$ is usually tiny. Experiments on 128–1024-bit primes in the paper give $\Pr[g \le 6] \approx 0.77$ and $\Pr[g \le 20] \approx 0.91$. In practice $\lfloor g/k \rfloor = 0$, and **a single pass** ($m=0$) over the convergents is enough.
+- With balanced primes ($p < q < 2p$) we have $\lvert N - \phi(N)\rvert = \lvert p+q-1\rvert < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
+- For random balanced primes, $g = \gcd(p-1,q-1)$ is usually tiny. Experiments on 128–1024-bit primes in the paper give $\Pr[g \le 6] \approx 0.77$ and $\Pr[g \le 20] \approx 0.91$. In practice $\lfloor g/k \rfloor = 0$, and a single pass ($m=0$) over the convergents is enough.
 
 **Worked example (from the paper).** With $(e, N) = (58549809,\ 2447482909)$:
 
@@ -232,7 +232,7 @@ The convergent $c_3 = 5/209$ gives $\tilde\phi = \lfloor e/c_3 \rfloor = 2447382
 
 ### 3.4 Countermeasures
 
-Under the usual assumptions ($e$ about as long as $N$, balanced primes, small $g_0$) the theorem reduces to the familiar **Wiener bound**:
+Under the usual assumptions ($e$ about as long as $N$, balanced primes, small $g_0$) the theorem reduces to the familiar *Wiener bound*:
 
 $$
 d < \frac{1}{\omega}\sqrt[4]{N}, \qquad \omega > 1

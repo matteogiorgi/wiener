@@ -161,7 +161,7 @@ The paper proves that:
 - **Legendre's theorem**: if a fraction is "close enough" to $\gamma$, it *must* be one of its convergents:
 
 $$
-\left|\gamma - \frac{a}{b}\right| < \frac{1}{2b^2} \thickspace\Longrightarrow\thickspace \frac{a}{b} \in \lbrace c_i\rbrace
+\left|\gamma - \frac{a}{b}\right| < \frac{1}{2b^2} \quad\Longrightarrow\quad \frac{a}{b} \in \lbrace c_i\rbrace
 $$
 
 The expansion of a rational $x/y$ is computed with exactly the same quotients as the Euclidean algorithm for $\gcd(x,y)$, so it has $O(\log N)$ terms.
@@ -209,8 +209,8 @@ There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$,
 
 ### 3.3 Efficiency
 
-- Convergents that violate $\left|e/N - c_i\right| < 1/(2(dg_0)^2)$ can be discarded a priori.
-- With **balanced primes** ($p < q < 2p$) we have $|N - \phi(N)| = |p+q-1| < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
+- Convergents that violate $\left\|e/N - c_i\right\| < 1/(2(dg_0)^2)$ can be discarded a priori.
+- With **balanced primes** ($p < q < 2p$) we have $\|N - \phi(N)\| = \|p+q-1\| < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
 - For random balanced primes, $g = \gcd(p-1,q-1)$ is usually tiny. Experiments on 128–1024-bit primes in the paper give $\Pr[g \le 6] \approx 0.77$ and $\Pr[g \le 20] \approx 0.91$. In practice $\lfloor g/k \rfloor = 0$, and **a single pass** ($m=0$) over the convergents is enough.
 
 **Worked example (from the paper).** With $(e, N) = (58549809,\ 2447482909)$:

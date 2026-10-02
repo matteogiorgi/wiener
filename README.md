@@ -78,25 +78,25 @@ Throughout the text the usual cast is used: **Alice** (sender), **Bob** (receive
 
 Bob picks two large primes $p, q$ and computes the modulus $N = pq$. He then chooses a public exponent $e \in \mathbb{Z}^\ast_{\phi(N)}$ and computes the private exponent $d$ such that $ed \equiv 1 \pmod{\phi(N)}$:
 
-```math
+$$
 k_{pub} = (e, N) \qquad k_{priv} = (d, p, q)
-```
+$$
 
-```math
+$$
 \mathrm{Enc}_k : m \mapsto c = m^e \bmod N \qquad\qquad \mathrm{Dec}_k : c \mapsto m = c^d \bmod N
-```
+$$
 
 Correctness follows from the **Euler–Fermat theorem** ($a^{\phi(n)} \equiv 1 \pmod n$ for $\gcd(a,n)=1$), extended to messages not coprime with $N$ via the **Chinese Remainder Theorem**:
 
-```math
+$$
 c^d \equiv (m^e)^d = m^{1+k\phi(N)} \equiv m \pmod N
-```
+$$
 
 While inverting $e$ modulo $\phi(N)$ is *sufficient*, the *necessary* condition is that $e, d$ are inverse modulo **Carmichael's function** $\lambda(N) = \mathrm{lcm}(p-1, q-1)$, which is what PKCS #1 prescribes. The two are related by
 
-```math
-\phi(N) = (p-1)(q-1) = \gcd(p-1,q-1)\,\lambda(N)
-```
+$$
+\phi(N) = (p-1)(q-1) = \gcd(p-1,q-1)\thinspace\lambda(N)
+$$
 
 ```mermaid
 sequenceDiagram
@@ -120,16 +120,16 @@ The paper focuses on *indirect algorithmic* attacks, which exploit mathematical 
 
 | Attack | Idea | Result |
 |---|---|---|
-| **Computing $\phi(N)$** | Since $p+q = N - \phi(N) + 1$, $p$ and $q$ are the roots of $x^2 - (N-\phi(N)+1)\,x + N = 0$ | $\phi(N) \overset{\mathcal P}{\Longleftrightarrow} \text{factoring } N$ |
+| **Computing $\phi(N)$** | Since $p+q = N - \phi(N) + 1$, $p$ and $q$ are the roots of $x^2 - (N-\phi(N)+1)\thinspace x + N = 0$ | $\phi(N) \overset{\mathcal P}{\Longleftrightarrow} \text{factoring } N$ |
 | **$e$-th root** | Knowing $\phi(N)$, solve $ed - k\phi(N) = 1$ with the extended Euclidean algorithm | $\phi(N) \overset{\mathcal P}{\Longrightarrow} \sqrt[e]{c} \bmod N$ |
 | **Common modulus** | Same $m$ encrypted under the same $N$ with coprime $e_1 \ne e_2$: find $e_1x + e_2y = 1$ | $c_1^x c_2^y \equiv m^{e_1x+e_2y} \equiv m \pmod N$ |
 | **Fixed point** (Simmons–Norris, 1977) | $\mathrm{Enc}_k$ is a permutation: re-encrypting $c$ eventually cycles back to $c$ | if $c^{(e^k)} \equiv c$ then $c^{(e^{k-1})} \equiv m$ |
 
 The first row is the key fact reused by Wiener's attack: **anyone who learns $\phi(N)$ can factor $N$**:
 
-```math
+$$
 (p, q) = \frac{A \pm \sqrt{A^2 - 4N}}{2}, \qquad A = N - \phi(N) + 1
-```
+$$
 
 Two open problems are stated along the way: whether computing $e$-th roots modulo $N$ is actually as hard as factoring, and whether $d < \sqrt N$ can always be recovered in polynomial time.
 
@@ -140,18 +140,18 @@ Two open problems are stated along the way: whether computing $e$-th roots modul
 
 Small private exponents are tempting because they make decryption fast (e.g. on smart cards). Wiener showed that if $d$ is roughly smaller than $\sqrt[4]{N}$, then $d$ can be recovered from the public key alone:
 
-```math
-(e, N) \xrightarrow[\;d\ \text{small}\;]{\;\mathcal P\;} \{d\}
-```
+$$
+(e, N) \xrightarrow[d\ \text{small}]{\mathcal P} \lbrace d\rbrace
+$$
 
 
 ### 3.1 Continued fractions and convergents
 
 A regular continued fraction is written $\gamma = [\beta_0;\beta_1,\dots,\beta_n]$, and its $i$-th **convergent** is $c_i = [\beta_0;\beta_1,\dots,\beta_i] = a_i/b_i$, where
 
-```math
+$$
 a_i = \beta_i a_{i-1} + a_{i-2}, \qquad b_i = \beta_i b_{i-1} + b_{i-2}, \qquad (a_{-1},b_{-1}) = (1,0),\ (a_0,b_0) = (\beta_0,1)
-```
+$$
 
 The paper proves that:
 
@@ -160,9 +160,9 @@ The paper proves that:
 - each convergent $a_n/b_n$ approximates $\gamma$ better than any fraction whose denominator is at most $b_n$;
 - **Legendre's theorem**: if a fraction is "close enough" to $\gamma$, it *must* be one of its convergents:
 
-```math
-\left|\gamma - \frac{a}{b}\right| < \frac{1}{2b^2} \;\Longrightarrow\; \frac{a}{b} \in \{c_i\}
-```
+$$
+\left|\gamma - \frac{a}{b}\right| < \frac{1}{2b^2} \thickspace\Longrightarrow\thickspace \frac{a}{b} \in \lbrace c_i\rbrace
+$$
 
 The expansion of a rational $x/y$ is computed with exactly the same quotients as the Euclidean algorithm for $\gcd(x,y)$, so it has $O(\log N)$ terms.
 
@@ -171,23 +171,23 @@ The expansion of a rational $x/y$ is computed with exactly the same quotients as
 
 **Theorem (Wiener).** Let $N = pq$ and $e,d \in \mathbb{Z}^\ast_{\lambda(N)}$. Write $g = \gcd(p-1,q-1)$ and $k = (ed-1)/\lambda(N)$, and set $k = k_0\gcd(k,g)$, $g = g_0\gcd(k,g)$. If
 
-```math
-d < \frac{pq}{2(p+q-1)\,k_0 g_0} = \frac{N}{2\,(N-\phi(N))\,k_0 g_0}
-```
+$$
+d < \frac{pq}{2(p+q-1)\thinspace k_0 g_0} = \frac{N}{2\thinspace(N-\phi(N))\thinspace k_0 g_0}
+$$
 
 then $N$ can be factored in time polynomial in $\log_2 N$.
 
 *Proof sketch.* From $\phi(N) = g\lambda(N)$ and $ed = 1 + k\lambda(N)$ we get $ed = 1 + \frac{k}{g}\phi(N)$. Dividing by $dN$ and using the hypothesis gives
 
-```math
-\left|\frac{e}{N} - \frac{k_0}{d g_0}\right| < \frac{1}{2\,(d g_0)^2}
-```
+$$
+\left|\frac{e}{N} - \frac{k_0}{d g_0}\right| < \frac{1}{2\thinspace(d g_0)^2}
+$$
 
 which is exactly the hypothesis of Legendre's theorem. Therefore $k_0/(dg_0)$ **is one of the convergents of $e/N$**, and once you have the right convergent $c$:
 
-```math
+$$
 \phi(N) = \left\lfloor \frac{e}{c} \right\rfloor - \left\lfloor \frac{g_0}{k_0} \right\rfloor
-```
+$$
 
 ```mermaid
 flowchart TD
@@ -215,9 +215,9 @@ There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$,
 
 **Worked example (from the paper).** With $(e, N) = (58549809,\ 2447482909)$:
 
-```math
-\frac{e}{N} = [0;\,41,\,1,\,4,\,23,\dots], \qquad \{c_i\} = \left\{0,\ \tfrac{1}{41},\ \tfrac{1}{42},\ \tfrac{5}{209},\ \tfrac{116}{4849},\ \dots\right\}
-```
+$$
+\frac{e}{N} = [0;\thinspace41,\thinspace1,\thinspace4,\thinspace23,\dots], \qquad \lbrace c_i\rbrace  = \left\lbrace 0,\ \tfrac{1}{41},\ \tfrac{1}{42},\ \tfrac{5}{209},\ \tfrac{116}{4849},\ \dots\right\rbrace
+$$
 
 The convergent $c_3 = 5/209$ gives $\tilde\phi = \lfloor e/c_3 \rfloor = 2447382016$, which factors $N = 60317 \cdot 40577$. So $d = 209$, comfortably below the theorem's bound ($\approx 2426$).
 
@@ -226,9 +226,9 @@ The convergent $c_3 = 5/209$ gives $\tilde\phi = \lfloor e/c_3 \rfloor = 2447382
 
 Under the usual assumptions ($e$ about as long as $N$, balanced primes, small $g_0$) the theorem reduces to the familiar **Wiener bound**:
 
-```math
+$$
 d < \frac{1}{\omega}\sqrt[4]{N}, \qquad \omega > 1
-```
+$$
 
 So with a 2048-bit modulus, $d$ must be at least ~512 bits long. The paper lists some ways to keep $d$ small while weakening the attack:
 
@@ -239,9 +239,9 @@ So with a 2048-bit modulus, $d$ must be at least ~512 bits long. The paper lists
 
 Setting $d = N^\delta$ and $e = N^\sigma$, the attack works roughly when
 
-```math
+$$
 \delta < \frac{3}{4} - \frac{\sigma}{2} - \nu
-```
+$$
 
 so small public exponents strengthen the attack (up to $\delta = 1/2$ when $\sigma = 1/2$) and large ones kill it ($\sigma = 3/2$). The paper also notes that the Wiener bound is not tight: Boneh and Durfee (1998) pushed it to $d < N^{0.292}$, and the correct bound is conjectured to be $\sqrt N$.
 
@@ -250,11 +250,11 @@ so small public exponents strengthen the attack (up to $\delta = 1/2$ when $\sig
 
 If $d = N^{0.25+\tau}$ the classic attack almost surely fails. Verheul and van Tilborg (1997) showed that the missing information can be **brute-forced**. With $r = \log_2 d - \log_2\sqrt[4]{N}$, the right fraction can be written in terms of two *consecutive* convergents $c_t = a_t/b_t$ and $c_{t+1} = a_{t+1}/b_{t+1}$:
 
-```math
-\frac{k_0}{d g_0} = \frac{U a_{t+1} + (U\Delta + V)\,a_t}{U b_{t+1} + (U\Delta + V)\,b_t}, \qquad \log_2 U,\ \log_2 V \le r + 4
-```
+$$
+\frac{k_0}{d g_0} = \frac{U a_{t+1} + (U\Delta + V)\thinspace a_t}{U b_{t+1} + (U\Delta + V)\thinspace b_t}, \qquad \log_2 U,\ \log_2 V \le r + 4
+$$
 
-where $\Delta$ is a small integer constant. For each of the $n-1$ pairs of consecutive convergents, the attacker tries the $2^{2r+8}$ possible values of $(U,V)$ and tests the resulting candidate $\tilde\phi = \lfloor e\,dg_0/k_0 \rfloor - m$ exactly as before.
+where $\Delta$ is a small integer constant. For each of the $n-1$ pairs of consecutive convergents, the attacker tries the $2^{2r+8}$ possible values of $(U,V)$ and tests the resulting candidate $\tilde\phi = \lfloor e\thinspace dg_0/k_0 \rfloor - m$ exactly as before.
 
 With a 64-bit brute-force budget, $2r+8 = 64$ gives $r = 28$: any RSA instance with $d < 2^{28}\sqrt[4]{N}$ falls. Dujella (2004) later narrowed the search for the right convergents to only three pairs.
 

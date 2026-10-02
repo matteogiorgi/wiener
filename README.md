@@ -26,10 +26,12 @@ The paper opens with Hardy's famous claim that number theory is "useless", and t
 └── src/
     ├── wiener_attack.pdf       # the compiled paper  <- start here
     ├── main.tex                # LaTeX source of the paper
-    ├── bibliography.bib
+    ├── bibliography.bib        # Tufte template leftover (not used by the paper)
     ├── tufte-book.cls          # document class
     ├── tufte-common.def
     ├── *.jpg / *.png / *.pdf   # figures (Escher, Tenniel's Alice, Peanuts, COPACOBANA, …)
+    ├── graphics/ …             # Tufte template graphics
+    ├── book_1_template.*       # Tufte book template
     └── template/ …             # original Tufte-book template
 ```
 
@@ -61,15 +63,15 @@ flowchart LR
 | Chapter | Section | Topics |
 |---|---|---|
 | **Towards RSA** | Introduction | Symmetric ciphers and their limits (key distribution, $O(n^2)$ keys, no authentication), DES and its brute-force history (Deep Crack, COPACOBANA), Diffie–Hellman's idea, one-way trapdoor functions, hybrid protocols (SSL/TLS, IPsec) |
-| | The RSA cryptosystem | Euler's $\phi$, Möbius $\mu$, Euler–Fermat theorem, key generation, encryption/decryption, Chinese Remainder Theorem, Carmichael's $\lambda$, PKCS #1 |
-| | Elementary attacks | $\phi(N)$ estimation, $e$-th root, common modulus, fixed-point (cycling) attack |
+| | The RSA cryptosystem | Euler's $\phi$, Möbius $\mu$, Euler–Fermat theorem, key generation, encryption/decryption, Chinese Remainder Theorem, Carmichael's $\lambda$, [PKCS #1](https://www.rfc-editor.org/info/rfc8017/) |
+| | Elementary attacks | Computing $\phi(N)$, $e$-th root, common modulus, fixed-point (cycling) attack |
 | **Wiener's attack** | The role of convergents | Regular continued fractions, recursive computation of convergents, monotonicity lemmas, best rational approximations, Legendre's theorem |
 | | Classic attack | Wiener's theorem and proof, search algorithm, $O(\log_2 N)$ complexity |
 | | Efficiency & countermeasures | Balanced primes, distribution of $g=\gcd(p-1,q-1)$, Wiener bound, Boneh–Durfee bound, CRT decryption |
 | | Extended attack | Verheul–van Tilborg brute-force extension, Dujella's improvement |
 | **Appendix** | | Mathematica implementation of both attacks |
 
-Throughout the text the usual cast is used: **Alice** (sender), **Bob** (receiver) and **Oscar** (the cryptanalyst).
+Throughout the paper the usual cast is used: **Alice** (sender), **Bob** (receiver) and **Oscar** (the cryptanalyst).
 
 
 
@@ -86,13 +88,13 @@ $$
 \mathrm{Enc}_k : m \mapsto c = m^e \bmod N \qquad\qquad \mathrm{Dec}_k : c \mapsto m = c^d \bmod N
 $$
 
-Correctness follows from the **Euler–Fermat theorem** ($a^{\phi(n)} \equiv 1 \pmod n$ for $\gcd(a,n)=1$), extended to messages not coprime with $N$ via the **Chinese Remainder Theorem**:
+Correctness follows from the **Euler–Fermat theorem** ($a^{\phi(n)} \equiv 1 \pmod n$ for $\gcd(a,n)=1$), extended to messages not coprime with $N$ via the Chinese Remainder Theorem. Writing $ed = 1 + k\phi(N)$ for some integer $k$:
 
 $$
 c^d \equiv (m^e)^d = m^{1+k\phi(N)} \equiv m \pmod N
 $$
 
-While inverting $e$ modulo $\phi(N)$ is *sufficient*, the *necessary* condition is that $e, d$ are inverse modulo **Carmichael's function** $\lambda(N) = \mathrm{lcm}(p-1, q-1)$, which is what PKCS #1 prescribes. The two are related by
+While inverting $e$ modulo $\phi(N)$ is *sufficient*, the *necessary* condition is that $e, d$ are inverse modulo **Carmichael's function** $\lambda(N) = \mathrm{lcm}(p-1, q-1)$, which is what [PKCS #1](https://www.rfc-editor.org/info/rfc8017/) prescribes. The two are related by
 
 $$
 \phi(N) = (p-1)(q-1) = \gcd(p-1,q-1)\thinspace\lambda(N)
@@ -120,12 +122,12 @@ The paper focuses on *indirect algorithmic* attacks, which exploit mathematical 
 
 | Attack | Idea | Result |
 |---|---|---|
-| **Computing $\phi(N)$** | Since $p+q = N - \phi(N) + 1$, $p$ and $q$ are the roots of $x^2 - (N-\phi(N)+1)\thinspace x + N = 0$ | $\phi(N) \overset{\mathcal P}{\Longleftrightarrow} \text{factoring } N$ |
-| **$e$-th root** | Knowing $\phi(N)$, solve $ed - k\phi(N) = 1$ with the extended Euclidean algorithm | $\phi(N) \overset{\mathcal P}{\Longrightarrow} \sqrt[e]{c} \bmod N$ |
+| **Computing $\boldsymbol{\phi(N)}$** | Since $p+q = N - \phi(N) + 1$, $p$ and $q$ are the roots of $x^2 - (N-\phi(N)+1)\thinspace x + N = 0$ | $\phi(N) \overset{\mathcal P}{\Longleftrightarrow} \text{factoring } N$ |
+| **$\boldsymbol{e}$-th root** | Knowing $\phi(N)$, solve $ed - k\phi(N) = 1$ with the extended Euclidean algorithm to get $d$, then $m = c^d \bmod N$ | $\phi(N) \overset{\mathcal P}{\Longrightarrow} \sqrt[e]{c} \bmod N$ |
 | **Common modulus** | Same $m$ encrypted under the same $N$ with coprime $e_1 \ne e_2$: find $e_1x + e_2y = 1$ | $c_1^x c_2^y \equiv m^{e_1x+e_2y} \equiv m \pmod N$ |
 | **Fixed point** (Simmons–Norris, 1977) | $\mathrm{Enc}_k$ is a permutation: re-encrypting $c$ eventually cycles back to $c$ | if $c^{(e^k)} \equiv c$ then $c^{(e^{k-1})} \equiv m$ |
 
-The first row is the key fact reused by Wiener's attack: **anyone who learns $\phi(N)$ can factor $N$**:
+The first row is the key fact reused by Wiener's attack $\Rightarrow$ anyone who learns $\phi(N)$ can factor $N$:
 
 $$
 (p, q) = \frac{A \pm \sqrt{A^2 - 4N}}{2}, \qquad A = N - \phi(N) + 1
@@ -147,7 +149,7 @@ $$
 
 ### 3.1 Continued fractions and convergents
 
-A regular continued fraction is written $\gamma = [\beta_0;\beta_1,\dots,\beta_n]$, and its $i$-th **convergent** is $c_i = [\beta_0;\beta_1,\dots,\beta_i] = a_i/b_i$, where
+A regular continued fraction is written $\gamma = [\beta_0;\beta_1,\dots,\beta_n]$, and its $i$-th convergent is $c_i = [\beta_0;\beta_1,\dots,\beta_i] = a_i/b_i$, where
 
 $$
 a_i = \beta_i a_{i-1} + a_{i-2}, \qquad b_i = \beta_i b_{i-1} + b_{i-2}, \qquad (a_{-1},b_{-1}) = (1,0),\ (a_0,b_0) = (\beta_0,1)
@@ -157,14 +159,14 @@ The paper proves that:
 
 - every convergent is already in lowest terms, since $a_{i-1}b_i - a_ib_{i-1} = (-1)^i$;
 - even convergents increase strictly, odd ones decrease strictly, and $\gamma$ lies between them;
-- each convergent $a_n/b_n$ approximates $\gamma$ better than any fraction whose denominator is at most $b_n$;
+- each convergent $a_n/b_n$ approximates $\gamma$ better than any other fraction whose denominator is at most $b_n$;
 - **Legendre's theorem**: if a fraction is "close enough" to $\gamma$, it *must* be one of its convergents:
 
 $$
 \left|\gamma - \frac{a}{b}\right| < \frac{1}{2b^2} \quad\Longrightarrow\quad \frac{a}{b} \in \lbrace c_i\rbrace
 $$
 
-The expansion of a rational $x/y$ is computed with exactly the same quotients as the Euclidean algorithm for $\gcd(x,y)$, so it has $O(\log N)$ terms.
+The expansion of a rational $x/y$ is computed with exactly the same quotients as the Euclidean algorithm for $\gcd(x,y)$, so it has $O(\log y)$ terms; for $e/N$ that is $O(\log N)$.
 
 
 ### 3.2 The classic attack
@@ -200,17 +202,17 @@ flowchart TD
     T -- yes --> OK(["N factored -> d = e⁻¹ mod φ(N)"])
     T -- no --> MORE{"more convergents?"}
     MORE -- yes --> I
-    MORE -- no --> INC["m <- m + 1<br/>(m never exceeds ⌊g/k⌋)"]
+    MORE -- no --> INC["m <- m + 1, restart from c₁<br/>(m never exceeds ⌊g/k⌋)"]
     INC --> I
 ```
 
-There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$, so the overall search costs $\Theta(\log_2 N)$ candidate checks.
+There are $O(\log_2 N)$ convergents and $m$ is bounded by $\lfloor g/k \rfloor$, so, as long as $\lfloor g/k \rfloor$ is a small constant (the typical case, see below), the overall search costs $\Theta(\log_2 N)$ candidate checks.
 
 
 ### 3.3 Efficiency
 
-- Convergents that violate $\left\|e/N - c_i\right\| < 1/(2(dg_0)^2)$ can be discarded a priori.
-- With **balanced primes** ($p < q < 2p$) we have $\|N - \phi(N)\| = \|p+q-1\| < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
+- The right convergent has denominator $dg_0$, so any convergent $c_i = a_i/b_i$ with $\lvert e/N - c_i\rvert \ge 1/(2b_i^2)$ can be discarded a priori.
+- With **balanced primes** ($p < q < 2p$) we have $\lvert N - \phi(N)\rvert = \lvert p+q-1\rvert < 3\sqrt N$, so $N$ and $\phi(N)$ share about half of their most significant bits.
 - For random balanced primes, $g = \gcd(p-1,q-1)$ is usually tiny. Experiments on 128–1024-bit primes in the paper give $\Pr[g \le 6] \approx 0.77$ and $\Pr[g \le 20] \approx 0.91$. In practice $\lfloor g/k \rfloor = 0$, and **a single pass** ($m=0$) over the convergents is enough.
 
 **Worked example (from the paper).** With $(e, N) = (58549809,\ 2447482909)$:
@@ -234,27 +236,27 @@ So with a 2048-bit modulus, $d$ must be at least ~512 bits long. The paper lists
 
 1. use **unbalanced primes** to make $N - \phi(N)$ larger;
 2. pick $p, q$ with a **large $g$** (as in *Common Prime RSA*);
-3. use a **large public exponent** $e > N$, obtained by adding a multiple of $\lambda(N)$ to $e$; for $e > N^{3/2}$ the attack gives no guarantees;
+3. use a **large public exponent** $e > N$, obtained by adding a multiple of $\lambda(N)$ to $e$; for $e > N^{3/2}$ the attack is no longer guaranteed to succeed;
 4. decrypt with the **CRT**, using small $d_p \equiv d \pmod{p-1}$ and $d_q \equiv d \pmod{q-1}$ while $d$ itself stays of order $\phi(N)$.
 
-Setting $d = N^\delta$ and $e = N^\sigma$, the attack works roughly when
+Setting $d = N^\delta$ and $e = N^\sigma$ (with balanced primes and small $g_0$), the attack works roughly when
 
 $$
 \delta < \frac{3}{4} - \frac{\sigma}{2} - \nu
 $$
 
-so small public exponents strengthen the attack (up to $\delta = 1/2$ when $\sigma = 1/2$) and large ones kill it ($\sigma = 3/2$). The paper also notes that the Wiener bound is not tight: Boneh and Durfee (1998) pushed it to $d < N^{0.292}$, and the correct bound is conjectured to be $\sqrt N$.
+where $\nu > 0$ absorbs the lower-order terms of the approximation. So small public exponents strengthen the attack (up to $\delta = 1/2$ when $\sigma = 1/2$) and large ones kill it ($\sigma = 3/2$). The paper also notes that the Wiener bound is not tight: Boneh and Durfee (1998) pushed it to $d < N^{0.292}$, and the correct bound is conjectured to be $\sqrt N$.
 
 
 ### 3.5 The extended attack
 
-If $d = N^{0.25+\tau}$ the classic attack almost surely fails. Verheul and van Tilborg (1997) showed that the missing information can be **brute-forced**. With $r = \log_2 d - \log_2\sqrt[4]{N}$, the right fraction can be written in terms of two *consecutive* convergents $c_t = a_t/b_t$ and $c_{t+1} = a_{t+1}/b_{t+1}$:
+If $d = N^{0.25+\tau}$ the classic attack almost surely fails. Verheul and van Tilborg (1997) showed that the missing information can be brute-forced. With $r = \log_2 d - \log_2\sqrt[4]{N}$, the right fraction can be written in terms of two *consecutive* convergents $c_t = a_t/b_t$ and $c_{t+1} = a_{t+1}/b_{t+1}$:
 
 $$
 \frac{k_0}{d g_0} = \frac{U a_{t+1} + (U\Delta + V)\thinspace a_t}{U b_{t+1} + (U\Delta + V)\thinspace b_t}, \qquad \log_2 U,\ \log_2 V \le r + 4
 $$
 
-where $\Delta$ is a small integer constant. For each of the $n-1$ pairs of consecutive convergents, the attacker tries the $2^{2r+8}$ possible values of $(U,V)$ and tests the resulting candidate $\tilde\phi = \lfloor e\thinspace dg_0/k_0 \rfloor - m$ exactly as before.
+where $\Delta$ is a small integer constant. For each of the $n-1$ pairs of consecutive convergents ($n$ being the number of convergents of $e/N$), the attacker tries the $2^{2r+8}$ possible values of $(U,V)$ and tests the resulting candidate $\tilde\phi = \lfloor e\thinspace dg_0/k_0 \rfloor - m$ exactly as before.
 
 With a 64-bit brute-force budget, $2r+8 = 64$ gives $r = 28$: any RSA instance with $d < 2^{28}\sqrt[4]{N}$ falls. Dujella (2004) later narrowed the search for the right convergents to only three pairs.
 
@@ -281,11 +283,11 @@ checkL[phi_List] := Flatten[Cases[check /@ phi,_List]];
 primes = Flatten[checkL /@ (phiList-m /. {m->#}& /@ Range[0,9])];   (* try m = 0 … 9 *)
 ```
 
-| Step | Wolfram code | Paper |
+| Step | Wolfram code | Section |
 |---|---|---|
-| expand $e/N$ | `ContinuedFraction`, `Convergents` | §3.1 |
-| $\tilde\phi = \lfloor e/c_i \rfloor - m$ | `Floor[e/Rest[cList]]`, `phiList - m` | §3.2 |
-| factor via $\phi(N)$ | `Solve[x^2-(n-phi+1)x+n==0, x]` | §2, $\phi(N) \Leftrightarrow$ factoring |
+| expand $e/N$ | `ContinuedFraction`, `Convergents` | [§3.1](#31-continued-fractions-and-convergents) |
+| $\tilde\phi = \lfloor e/c_i \rfloor - m$ | `Floor[e/Rest[cList]]`, `phiList - m` | [§3.2](#32-the-classic-attack) |
+| factor via $\phi(N)$ | `Solve[x^2-(n-phi+1)x+n==0, x]` | [§2](#2-elementary-attacks), $\phi(N) \Leftrightarrow$ factoring |
 
 For the sample key above the expansion is $e/N = [0;3,1,4,5,1,1,3,\dots]$, and the convergent $202/769$ reveals
 
@@ -313,13 +315,17 @@ primes = Flatten[checkL /@ (phiList-m /. {m->#}& /@ Range[0,9])];
 
 ### Running
 
-With [`wolframscript`](https://www.wolfram.com/wolframscript/) installed:
+With [`wolframscript`](https://www.wolfram.com/wolframscript/) installed, from the repository root:
 
 ```bash
-wolframscript -file assets/code/classic.wl
+# classic attack
+wolframscript -code 'Get["assets/code/classic.wl"]; primes'
+
+# extended attack (needs the definitions from classic.wl)
+wolframscript -code 'Get["assets/code/classic.wl"]; Get["assets/code/extended.wl"]; primes'
 ```
 
-You can also paste the cells into a Mathematica notebook and evaluate `primes`.
+Both scripts end with a `;`, which suppresses output, so `primes` is evaluated explicitly at the end. You can also paste the cells into a Mathematica notebook and evaluate `primes`.
 
 
 
@@ -350,4 +356,4 @@ The precompiled output is [`src/wiener_attack.pdf`](https://github.com/matteogio
 8. D. Boneh, G. Durfee — *Cryptanalysis of RSA with Private Key d Less Than N^0.292*, 1998.
 9. *PKCS #1: RSA Cryptography Specifications Version 2.2*, IETF, 2012.
 
-The full bibliography (18 entries) is at the end of the paper and in [`src/bibliography.bib`](https://github.com/matteogiorgi/wiener/blob/master/src/bibliography.bib).
+The full bibliography (18 entries) is at the end of the paper; it is written directly in [`src/main.tex`](https://github.com/matteogiorgi/wiener/blob/master/src/main.tex) (`thebibliography` environment).
